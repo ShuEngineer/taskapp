@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0374396A23953CB5000A52F8 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374396923953CB5000A52F8 /* Task.swift */; };
 		03FEE4A82394C9AA00A247DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FEE4A72394C9AA00A247DC /* AppDelegate.swift */; };
 		03FEE4AA2394C9AA00A247DC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FEE4A92394C9AA00A247DC /* ViewController.swift */; };
 		03FEE4AD2394C9AA00A247DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03FEE4AB2394C9AA00A247DC /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0374396923953CB5000A52F8 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		03FEE4A42394C9AA00A247DC /* taskapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = taskapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FEE4A72394C9AA00A247DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03FEE4A92394C9AA00A247DC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 		03FEE49B2394C9AA00A247DC = {
 			isa = PBXGroup;
 			children = (
+				0374396923953CB5000A52F8 /* Task.swift */,
 				03FEE4A62394C9AA00A247DC /* taskapp */,
 				03FEE4A52394C9AA00A247DC /* Products */,
 				0B4A5D6AB973E93D52BBCB04 /* Pods */,
@@ -80,7 +83,6 @@
 				7ABE7CEA299297FB5935176F /* Pods-taskapp.debug.xcconfig */,
 				6A09BA1DABF79593A528453F /* Pods-taskapp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -207,6 +209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0374396A23953CB5000A52F8 /* Task.swift in Sources */,
 				03FEE4BA239500AF00A247DC /* InputViewController.swift in Sources */,
 				03FEE4AA2394C9AA00A247DC /* ViewController.swift in Sources */,
 				03FEE4A82394C9AA00A247DC /* AppDelegate.swift in Sources */,
