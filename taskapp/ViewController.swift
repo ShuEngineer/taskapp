@@ -10,11 +10,15 @@ import UIKit
 import RealmSwift
 import UserNotifications
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     @IBOutlet weak var tableView: UITableView!
-    
+    //検索
+    @IBOutlet weak var searchBar: UISearchBar!
+    //検索のキーワード
+    var searchResults:[String] = []
     //Realmインスタンスを取得する
     let realm = try! Realm()
+    
     
     // DB内のタスクが格納されるリスト。データの配列
     // 日付近い順\順でソート：降順 ascending: false
@@ -27,13 +31,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
+        searchBar.delegate = self
+        searchBar.showsCancelButton = true
+    
     }
     // MARK: UITableViewDataSourceプロトコルのメソッド
     // データの数（＝セルの数）を返すメソッド
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return taskArray.count  //データの数＝配列の数
-    }
+        if searchBar.text != "" {
+        return searchResults.count
+        }else{
+            return taskArray.count //データの数＝配列の数
+        }
     
+    }
     // 各セルの内容を返すメソッド
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用可能な cell を得る
@@ -41,8 +52,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //cellに値を設定する
         //データの配列であるtaskArrayから該当するデータを取り出してセルに設定
+        
         let task = taskArray[indexPath.row]
-        cell.textLabel?.text = task.title
+        //let search = searchResults[indexPath.row]
+        if searchBar.text != "" {
+            //cell.textLabel?.text = "\(searchResults[indexPath.row])"
+            cell.textLabel?.text = searchResults[indexPath.row]
+        }else{
+            //cell.textLabel?.text = "\(task.title)"
+            cell.textLabel?.text = task.title
+        }
+        
+        //
+        
         
         //DateFormatterクラスは日付を表すDateクラスを任意の形の文字列に変換する機能を持つ
         let formatter = DateFormatter()
@@ -50,8 +72,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let dateString:String = formatter.string(from: task.date)
         cell.detailTextLabel?.text = dateString
-        
+     
         return cell
+    
     }
     
     // MARK: UITableViewDelegateプロトコルのメソッド
@@ -60,6 +83,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //segueのIDを指定して遷移させるperformSegue(withIdentifier:sender)メソッドの呼び出しを追加
         performSegue(withIdentifier: "cellSegue", sender: nil)
     
+    }
+    
+    // 検索ボタンが押された時に呼ばれる
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+        searchBar.showsCancelButton = true
+        self.searchResults = taskArray.filter {
+            // 大文字と小文字を区別せずに検索
+            $0.lowercased().contains(searchBar.text!.lowercased())
+            
+        }
+        self.tableView.reloadData()
+    }
+    
+    
+    // キャンセルボタンが押された時に呼ばれる
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        self.view.endEditing(true)
+        searchBar.text = ""
+        self.tableView.reloadData()
     }
     
     // セルが削除が可能なことを伝えるメソッド
@@ -137,6 +181,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.reloadData()
     }
     
-    
 }
+
 

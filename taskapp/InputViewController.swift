@@ -12,6 +12,7 @@ import UserNotifications
 
 class InputViewController: UIViewController {
     @IBOutlet weak var titleTextField: UITextField!
+    @IBOutlet weak var category: UITextField!
     @IBOutlet weak var contentsTextView: UITextView!
     @IBOutlet weak var datePicker: UIDatePicker!
     
@@ -20,6 +21,7 @@ class InputViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //==============入力画面(キーボードが表示されている状態)を終了する処理
         //背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         //タップを判断するにはUITapGestureRecognizerクラスを利用
         //UITapGestureRecognizerクラスの初期化時にタップされたときにどのクラスのどのメソッドが呼ばれるかを指定
@@ -32,6 +34,7 @@ class InputViewController: UIViewController {
         
         //UIに値を反映するために最初にUIを作成した時に設定したアウトレットにそれぞれの値を設定
         titleTextField.text = task.title
+        category.text = task.category
         contentsTextView.text = task.contents
         datePicker.date = task.date
     }
@@ -40,12 +43,13 @@ class InputViewController: UIViewController {
         view.endEditing(true)
     }
     
-    //viewWillDisappear(_:)メソッド 遷移する際に、画面が非表示になるとき呼ばれるメソッド
-    //Realmのwrite(_:)メソッドを使用
+    //viewWillDisappear(_:)メソッド 遷移する際に、Input画面が非表示になるとき呼ばれるメソッド
+    //Realmのwrite(_:)メソッドを使用 ここでRealmにデータを書き込む
     
     override func viewWillDisappear(_ animated: Bool) {
         try! realm.write {
             self.task.title = self.titleTextField.text!
+            self .task.category = self.category.text!
             self.task.contents = self.contentsTextView.text
             self.task.date = self.datePicker.date
             self.realm.add(self.task, update: true)
@@ -75,6 +79,13 @@ class InputViewController: UIViewController {
             content.body = "(内容なし)"
         }else{
             content.body = task.contents
+            
+        }
+        
+        if task.category == "" {
+            category.text = "(カテゴリーなし)"
+        }else{
+            category.text = task.category
             
         }
         content.sound = UNNotificationSound.default
