@@ -10,6 +10,8 @@ import UIKit
 import RealmSwift
 import UserNotifications
 
+//UITableViewDelegate,UITableViewDataSource,UISearchBarDelegateはプロトコル
+//UISearchBarDelegateの追加
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     @IBOutlet weak var tableView: UITableView!
     //検索
@@ -18,8 +20,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var searchResults:[String] = []
     //Realmインスタンスを取得する
     let realm = try! Realm()
-    
-    
     // DB内のタスクが格納されるリスト。データの配列
     // 日付近い順\順でソート：降順 ascending: false
     // 以降内容をアップデートするとリスト内は自動的に更新される。
@@ -29,42 +29,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        //デリゲートの指定,Outletで接続したtableViewのdataSourceとdelegateにselfを指定
+        //ここでselfとはViewControllerのこと
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
         searchBar.showsCancelButton = true
     
     }
-    // MARK: UITableViewDataSourceプロトコルのメソッド
+    // MARK: UITableViewDataSourceプロトコルのデリゲートメソッド
     // データの数（＝セルの数）を返すメソッド
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchBar.text != "" {
-        return searchResults.count
-        }else{
             return taskArray.count //データの数＝配列の数
-        }
-    
     }
     // 各セルの内容を返すメソッド
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用可能な cell を得る
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        
         //cellに値を設定する
         //データの配列であるtaskArrayから該当するデータを取り出してセルに設定
         
         let task = taskArray[indexPath.row]
-        //let search = searchResults[indexPath.row]
-        if searchBar.text != "" {
-            //cell.textLabel?.text = "\(searchResults[indexPath.row])"
-            cell.textLabel?.text = searchResults[indexPath.row]
-        }else{
-            //cell.textLabel?.text = "\(task.title)"
-            cell.textLabel?.text = task.title
-        }
-        
-        //
-        
+        cell.textLabel?.text = task.title
         
         //DateFormatterクラスは日付を表すDateクラスを任意の形の文字列に変換する機能を持つ
         let formatter = DateFormatter()
@@ -77,7 +63,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     }
     
-    // MARK: UITableViewDelegateプロトコルのメソッド
+    // MARK: UITableViewDelegateプロトコルのデリゲートメソッド
     // 各セルを選択した時に実行されるメソッド
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     //segueのIDを指定して遷移させるperformSegue(withIdentifier:sender)メソッドの呼び出しを追加
@@ -87,27 +73,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // 検索ボタンが押された時に呼ばれる
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
         self.view.endEditing(true)
         searchBar.showsCancelButton = true
-        self.searchResults = taskArray.filter {
-            // 大文字と小文字を区別せずに検索
-            $0.lowercased().contains(searchBar.text!.lowercased())
-            
-        }
+        taskArray = try! Realm().objects(Task.self).filter("category == %@", searchBar.text)
+        //Realm().objects(データベース名.self).filter("データベース内の指定したいプロパティ名 == %@", UISearchBar名.text)
+        // %@ <--- searchBar.text のイメージ
+        //print(taskArray)
         self.tableView.reloadData()
     }
     
     
     // キャンセルボタンが押された時に呼ばれる
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)  //キーボードを閉じる
         searchBar.showsCancelButton = false
-        self.view.endEditing(true)
         searchBar.text = ""
+        taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
         self.tableView.reloadData()
     }
     
     // セルが削除が可能なことを伝えるメソッド
-    
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath)-> UITableViewCell.EditingStyle {
         return .delete
     }
