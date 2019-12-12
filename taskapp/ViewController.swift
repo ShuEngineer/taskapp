@@ -76,7 +76,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         self.view.endEditing(true)
         searchBar.showsCancelButton = true
-        taskArray = try! Realm().objects(Task.self).filter("category == %@", searchBar.text)
+        taskArray = try! Realm().objects(Task.self).filter("category == %@", searchBar.text!)
         //Realm().objects(データベース名.self).filter("データベース内の指定したいプロパティ名 == %@", UISearchBar名.text)
         // %@ <--- searchBar.text のイメージ
         //print(taskArray)
